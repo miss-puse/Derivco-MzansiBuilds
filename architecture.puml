@@ -1,0 +1,42 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+
+actor Developer
+
+rectangle "Frontend (React + Vite)" {
+  component "AuthContext" as AuthCtx
+  component "ProjectContext" as ProjCtx
+  component "Pages\nLogin/Register/Forgot/Reset\nFeed/ProjectDetail/Celebration" as Pages
+}
+
+rectangle "Backend (Spring Boot)" {
+  component "DeveloperController" as DevCtrl
+  component "ProjectController" as ProjCtrl
+  component "CommentController" as ComCtrl
+  component "ProgressController" as ProgCtrl
+  component "JwtAuthFilter + SecurityConfig" as Sec
+  component "Services" as Services
+  database "H2 / SQL DB" as DB
+}
+
+Developer --> Pages : Use platform
+Pages --> AuthCtx
+Pages --> ProjCtx
+AuthCtx --> DevCtrl : register/login/forgot/reset
+ProjCtx --> ProjCtrl : create/read/update/delete projects
+ProjCtx --> ComCtrl : create/list comments
+ProjCtx --> ProgCtrl : create/list progress updates
+
+DevCtrl --> Sec
+ProjCtrl --> Sec
+ComCtrl --> Sec
+ProgCtrl --> Sec
+
+DevCtrl --> Services
+ProjCtrl --> Services
+ComCtrl --> Services
+ProgCtrl --> Services
+Services --> DB
+
+@enduml
